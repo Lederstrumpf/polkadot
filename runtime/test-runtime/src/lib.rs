@@ -920,7 +920,7 @@ sp_api::impl_runtime_apis! {
 	}
 
 	impl mmr::MmrApi<Block, Hash, BlockNumber> for Runtime {
-		fn generate_proof(_block_number: BlockNumber)
+		fn generate_proof(_block_number: mmr::LeafIndex)
 			-> Result<(mmr::EncodableOpaqueLeaf, mmr::Proof<Hash>), mmr::Error>
 		{
 			Err(mmr::Error::PalletNotIncluded)

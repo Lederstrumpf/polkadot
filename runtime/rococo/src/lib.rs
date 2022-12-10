@@ -1719,9 +1719,15 @@ sp_api::impl_runtime_apis! {
 	}
 
 	impl mmr::MmrApi<Block, Hash, BlockNumber> for Runtime {
-		fn generate_proof(block_number: BlockNumber)
+		fn generate_proof(leaf_index: mmr::LeafIndex)
 			-> Result<(mmr::EncodableOpaqueLeaf, mmr::Proof<Hash>), mmr::Error>
 		{
+
+			let block_number = leaf_index
+				.checked_add(1)
+				.and_then(|n| TryInto::<BlockNumber>::try_into(n).ok())
+				.unwrap_or_default();
+			log::info!("generate_proof: {:?}", block_number);
 			Mmr::generate_batch_proof(vec![block_number])
 				.and_then(|(leaves, proof)| Ok((
 					mmr::EncodableOpaqueLeaf::from_leaf(&leaves[0]),
